@@ -1,0 +1,7 @@
+risk_category,distribution,cummulative_customers,cummulative_scores,min_cut_off_score,max_cut_off_score,goods,bads,totals,bad_rate%,bad_rate_at_cut_off%,perc_contrast,cumu_perc_contrast,cumu_perc_goods,cumu_perc_bads,average_amount,average_margin,Interest Income,Ave. Total Charge Off,Total Loss,Gross Margin
+low_risk,5,5,100.0,172,257,101,2,103,1.9,1.9,4.9,4.9,5.6,0.7,2272,13,29831.0,2272,4544,25287.0
+medium_low_risk,15,20,400.0,136,172,296,24,320,7.5,6.1,15.2,20.2,22.1,8.6,2272,13,87427.0,2272,54528,32899.0
+medium_risk,30,50,1000.0,94,136,571,68,639,10.6,8.9,30.4,50.6,53.9,30.9,2272,13,168651.0,2272,154496,14155.0
+medium_high_risk,25,75,1500.0,72,94,424,101,525,19.2,12.3,25.0,75.6,77.5,64.1,2272,13,125233.0,2272,229472,-104239.0
+high_risk,15,90,1800.0,56,72,252,54,306,17.6,13.2,14.6,90.2,91.6,81.9,2272,13,74431.0,2272,122688,-48257.0
+very_high_risk,10,100,2000.0,16,56,151,55,206,26.7,14.5,9.8,100.0,100.0,100.0,2272,13,44599.0,2272,124960,-80361.0

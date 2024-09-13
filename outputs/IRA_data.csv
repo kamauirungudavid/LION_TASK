@@ -1,0 +1,38 @@
+Class of Business,Sub-Class of Business,Direct,Inward Reinsurance,Outward Reinsurance,Total
+Aviation,Sub-Class A,20,26,24,70
+Aviation,Sub-Class B,19,13,25,57
+Aviation,Sub-Class C,25,23,16,64
+Aviation,Sub-Class D,17,27,19,63
+Aviation,Sub-Class E,25,20,19,64
+Aviation,Sub-Class F,18,17,18,53
+Aviation,Sub-Class G,9,21,15,45
+Aviation,Sub-Class H,25,22,17,64
+Aviation,Sub-Class I,26,23,21,70
+Engineering,Sub-Class A,17,14,15,46
+Engineering,Sub-Class B,18,19,25,62
+Engineering,Sub-Class C,22,28,24,74
+Engineering,Sub-Class D,14,17,23,54
+Engineering,Sub-Class E,23,16,15,54
+Engineering,Sub-Class F,14,24,17,55
+Engineering,Sub-Class G,15,20,21,56
+Engineering,Sub-Class H,18,24,21,63
+Engineering,Sub-Class I,17,16,22,55
+Fire Domestic,Sub-Class A,20,13,23,56
+Fire Domestic,Sub-Class B,14,26,20,60
+Fire Domestic,Sub-Class C,18,12,18,48
+Fire Domestic,Sub-Class D,22,19,23,64
+Fire Domestic,Sub-Class E,23,21,20,64
+Fire Domestic,Sub-Class F,18,21,10,49
+Fire Domestic,Sub-Class G,18,19,21,58
+Fire Domestic,Sub-Class H,29,11,20,60
+Fire Domestic,Sub-Class I,22,15,20,57
+Miscellaneous,Sub-Class A,20,18,18,56
+Miscellaneous,Sub-Class B,23,15,21,59
+Miscellaneous,Sub-Class C,13,22,11,46
+Miscellaneous,Sub-Class D,15,11,24,50
+Miscellaneous,Sub-Class E,16,19,27,62
+Miscellaneous,Sub-Class F,31,24,18,73
+Miscellaneous,Sub-Class G,12,19,29,60
+Miscellaneous,Sub-Class H,25,16,13,54
+Miscellaneous,Sub-Class I,16,23,16,55
+Total,,697,694,709,2100
