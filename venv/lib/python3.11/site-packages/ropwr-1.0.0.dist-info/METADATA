@@ -1,0 +1,33 @@
+Metadata-Version: 2.1
+Name: ropwr
+Version: 1.0.0
+Summary: RoPWR: Robust Piecewise Regression
+Home-page: https://github.com/guillermo-navas-palencia/ropwr
+Author: Guillermo Navas-Palencia
+Author-email: g.navas.palencia@gmail.com
+License: Apache Licence 2.0
+Platform: any
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.7
+Requires-Dist: cvxpy (>=1.1.14)
+Requires-Dist: numpy (>=1.16)
+Requires-Dist: scikit-learn (>=0.22)
+Requires-Dist: scipy (>=1.6.1)
+
+
+**RoPWR** is a library written in Python implementing several mathematical
+programming formulations to compute the optimal continuous/discontinuous
+piecewise polynomial regression given a list of split points.
+
+Read the documentation at: http://gnpalencia.org/ropwr/
+
+RoPWR is distributed under the Apache Software License (Apache 2.0).
+
+

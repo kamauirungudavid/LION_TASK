@@ -1,0 +1,45 @@
+Metadata-Version: 2.1
+Name: optbinning
+Version: 0.19.0
+Summary: OptBinning: The Python Optimal Binning library
+Home-page: https://github.com/guillermo-navas-palencia/optbinning
+Author: Guillermo Navas-Palencia
+Author-email: g.navas.palencia@gmail.com
+License: Apache Licence 2.0
+Platform: any
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.7
+Requires-Dist: matplotlib
+Requires-Dist: numpy (<2,>=1.16.1)
+Requires-Dist: ortools (>=9.4)
+Requires-Dist: pandas
+Requires-Dist: ropwr (>=1.0.0)
+Requires-Dist: scikit-learn (>=1.0.2)
+Requires-Dist: scipy (>=1.6.0)
+Provides-Extra: distributed
+Requires-Dist: pympler ; extra == 'distributed'
+Requires-Dist: tdigest ; extra == 'distributed'
+
+
+The optimal binning is the optimal discretization of a variable into bins
+given a discrete or continuous numeric target. OptBinning is a library
+written in Python implementing a rigorous and flexible mathematical
+programming formulation to solving the optimal binning problem for a binary,
+continuous and multiclass target type, incorporating constraints not
+previously addressed.
+
+Read the documentation at: http://gnpalencia.org/optbinning/
+
+OptBinning is distributed under the Apache Software License (Apache 2.0).
+
+
