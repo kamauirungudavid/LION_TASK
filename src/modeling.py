@@ -16,6 +16,9 @@ from optbinning.scorecard import Scorecard
 from imblearn.over_sampling import SMOTE
 from optbinning.scorecard import plot_auc_roc, plot_cap, plot_ks
 import os
+import mlflow
+from mlflow.models import signature, infer_signature
+
 
 
 def load_data(data_path):
@@ -33,13 +36,13 @@ def load_data(data_path):
     """
     try:
         data = pd.read_csv(f'{data_path}')
-        logging.error('SUCCESS LOADING DATA')
+        logging.info('SUCCESS LOADING DATA')
     except Exception as e:
         logging.error(f"error reading csv_file:{e}")
 
     try:
         data = pd.read_excel(f'{data_path}')
-        logging('SUCCESS LOADING DATA')
+        logging.info('SUCCESS LOADING DATA')
     except Exception as e:
         logging.error(f"error reading excel_file:{e}")
     return data
@@ -69,6 +72,22 @@ def visualizations(data, wdir):
         plt.savefig(f"{wdir}/outputs/{col}_.png")
 
         return
+    try: 
+        for var in data.select_dtypes(include='number').columns:
+            variable = var
+            X = data[variable]
+            y = data['Default'].values
+
+            # Initialize the BinningProcess
+            opt = OptimalBinning(name=variable, dtype="numerical",
+                                class_weight="balanced", solver="mip", monotonic_trend="auto_asc_desc")
+            opt.fit(X, y)
+            binning_table = opt.binning_table
+            binning_table.build()
+            binning_table.plot(show_bin_labels=True)
+            plt.savefig(f'{wdir}/outputs/{var}_bins.png')
+    except Exception as e: 
+        logging.error('Error ploting optimal binning::{e}')
 
 
 def model_fitting(selection_criteria, list_variables, binning_fit_params, ml_model, X_train, y_train):
@@ -215,6 +234,98 @@ def get_policy_table(score_data, config_file):
     except Exception as e:
         logging.error(f'Error generating policy table:: {e}')
 
+
+# Function to create an experiment in MLFlow and log parameters, metrics and artifacts files like images etc.
+
+def create_experiment(wdir, model_data, model_name, experiment_name, run_name, run_metrics, model,
+                      run_params=None,y=None, X=None):
+    mlflow.set_tracking_uri("http://localhost:5000")
+    mlflow.set_experiment(experiment_name)
+
+    with mlflow.start_run():
+
+        dataset_source_url = "https://www.kaggle.com/datasets/neelesh0602/bankcsv"
+        
+
+        dataset: PandasDataset = mlflow.data.from_pandas(
+            model_data, source=dataset_source_url)
+
+        mlflow.log_input(dataset, context="training")
+        signature = infer_signature(
+            X, model.predict(X))
+        #log model
+        mlflow.sklearn.log_model(
+            model, model_name, signature=signature)
+
+        ######
+        score = model.score(X)
+        mask = y == 0
+        plt.hist(score[mask], label="non-event", color="b", alpha=0.35)
+        plt.hist(score[~mask], label="event", color="r", alpha=0.35)
+        plt.xlabel("score")
+        plt.legend()
+        plt.savefig(f"{wdir}/outputs/DEFAULT_DISTRIB.png")
+        mlflow.log_artifact(f"{wdir}/outputs/DEFAULT_DISTRIB.png", artifact_path="outputs")
+        preds = model.predict(X)
+
+        cm = confusion_matrix(y, preds)
+        plt.figure()
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, )
+
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[
+            'Non_Default', 'Default'])
+        disp.plot(cmap=plt.cm.Blues)
+        plt.title('Confusion Matrix', fontsize=15, pad=20)
+        plt.xlabel('Prediction', fontsize=11)
+        plt.ylabel('Actual', fontsize=11)
+        # Customizations
+        plt.gca().xaxis.set_label_position('top')
+        plt.gca().xaxis.tick_top()
+        plt.gca().figure.subplots_adjust(bottom=0.2)
+        plt.gca().figure.text(0.5, 0.05, 'Prediction', ha='center', fontsize=13)
+        plt.savefig(f'{wdir}/outputs/confusion_matrix.png')
+        # mlflow.log_artifact(f"{wdir}/outputs/confusion_matrix.png", artifact_path="outputs")
+
+        f1_scor = f1_score(y, preds)
+        mlflow.log_metric("f1_score", f1_scor)
+        
+        recall_scor = recall_score(y, preds)
+        mlflow.log_metric("recall_score", recall_scor)
+        precision_scor = precision_score(y, preds)
+        mlflow.log_metric("precision_score", precision_scor)
+
+
+            #params
+        if not run_params == None:
+            for param in run_params:
+                mlflow.log_param(param, run_params[param])
+
+        # for metric in run_metrics:
+        #     mlflow.log_metric(metric, run_metrics[metric])
+
+            # Log model
+        signature = infer_signature(
+            X, model.predict(X))
+
+        mlflow.sklearn.log_model(model, "model", signature=signature)
+
+        mlflow.sklearn.log_model(model, "model")
+
+        mlflow.log_artifact(f'{wdir}/outputs/confusion_matrix.png',
+                            artifact_path="performance")
+        mlflow.log_artifact(f"{wdir}/outputs/auc_roc.png",
+                            artifact_path="performance")
+
+        mlflow.log_artifact(f'{wdir}/outputs/confusion_matrix.png',
+                            artifact_path="performance")
+
+        mlflow.set_tag("tag1", "logistic_regression_model")
+    print('Run - %s is logged to Experiment - %s' %
+          (run_name, experiment_name))
+
+
+# creating the MLflow
+
 def main():
     wdir = os.getcwd()
     data_path = f'{wdir}/outputs/data_for_modeling.csv'
@@ -289,40 +400,15 @@ def main():
         score_data=data, config_file=policy_table_assumptions_config_file)
     policy_tab.to_csv(f"{wdir}/outputs/policy_table.csv", index=False)
 
-    score = fitted_model.score(X)
-    mask = y == 0
-    plt.hist(score[mask], label="non-event", color="b", alpha=0.35)
-    plt.hist(score[~mask], label="event", color="r", alpha=0.35)
-    plt.xlabel("score")
-    plt.legend()
-    plt.savefig(f"{wdir}/outputs/DEFAULT_DISTRIB.png")
+    # print(
+    #     f"The f1_score::{f1_scor} the recall_score::{recall_scor} the precision_score::{precision_scor}")
 
-    preds = fitted_model.predict(X_test)
-    print(classification_report(y_test, preds))
-
-    cm = confusion_matrix(y_test, preds)
-    plt.figure()
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, )
-
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[
-        'Non_Default', 'Default'])
-    disp.plot(cmap=plt.cm.Blues)
-    plt.title('Confusion Matrix', fontsize=15, pad=20)
-    plt.xlabel('Prediction', fontsize=11)
-    plt.ylabel('Actual', fontsize=11)
-    # Customizations
-    plt.gca().xaxis.set_label_position('top')
-    plt.gca().xaxis.tick_top()
-    plt.gca().figure.subplots_adjust(bottom=0.2)
-    plt.gca().figure.text(0.5, 0.05, 'Prediction', ha='center', fontsize=13)
-    plt.savefig(f'{wdir}/outputs/confusion_matrix.png')
-    f1_scor = f1_score(y_test, preds)
-    recall_scor = recall_score(y_test, preds)
-    precision_scor = precision_score(y_test, preds)
-    print(
-        f"The f1_score::{f1_scor} the recall_score::{recall_scor} the precision_score::{precision_scor}")
-
-    
+    experiment_name = 'credit_scorer'
+    run_name = 'first_gen_model'
+    model_name = 'ML_scorecard'
+    run_metrics=None
+    create_experiment(experiment_name=experiment_name, model_name=model_name, run_name=run_name, run_metrics=run_metrics,
+                      model=fitted_model, model_data=model_data, X=X_test, y=y_test, wdir=wdir)
 
 
 if __name__ == "__main__":

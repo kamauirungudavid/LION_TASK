@@ -56,7 +56,6 @@ Outputs/*
 output/*
 
 # virtual environment
-venv/
 myenv/
 .env
 .venv
@@ -67,6 +66,7 @@ env.bak/
 venv.bak/
 
 # Python-specific
+__pycache__/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -179,7 +179,9 @@ cython_debug/
 # PyCharm
 .idea/
 
-
+# Pezeshapy
+pezeshapy
+catboost_info
 
 #notebook
 .ipynb
